@@ -1,0 +1,50 @@
+0:00:00 Microsoft.UnloadController.HasCompletedUnloadProcessing_True
+0:00:00 Microsoft.Shutdown.OnWindowClosing_MaybeClearBrowsingDataOnExit
+0:00:00 Microsoft.Shutdown.OnWindowClosing_ClearBrowsingDataOnExitNotInProgress
+0:00:00 Microsoft.Shutdown.OnWindowClosingPostClearBrowsingData_NoBrowsingDataCleared
+0:00:00 Widget Closed: BrowserWidget
+0:00:00 Microsoft.UnloadController.HasCompletedUnloadProcessing_True
+0:00:00 Microsoft.Shutdown.OnWindowClosing
+0:00:00 Microsoft.Shutdown.OnWindowClosing_DeleteScheduled
+0:00:00 Microsoft.Browser_Removed
+0:00:00 Tab2 StartNav3 #typed
+0:00:00 Tab2 FinishNav3 ERR_ABORTED
+0:00:00 Tab2 StartNav4 #typed
+0:00:00 Tab2 FinishNav2
+0:00:00 Tab2 PageLoad
+0:00:00 Tab2 FinishNav4
+0:00:00 Tab2 PageLoad
+0:48:19 Microsoft.NewBrowser_Popup
+0:48:19 Microsoft.BrowserList.AddBrowser
+0:48:19 Browser3 Insert active Tab3 at 0
+0:48:19 Tab3 StartNav5 #auto_toplevel
+0:48:19 Tab3 FinishNav5
+0:48:19 Tab3 PageLoad
+0:48:19 Tab3 StartNav6 #typed
+0:48:19 Tab3 FinishNav6 ERR_ABORTED
+0:48:19 Tab3 StartNav7 #typed
+0:48:19 Tab3 FinishNav7
+0:48:19 Tab3 PageLoad
+0:48:20 Tab3 StartNav8 #typed
+0:48:20 Tab3 FinishNav8
+0:48:20 Tab3 PageLoad
+1:41:58 Tab2 StartNav9 #typed
+1:41:58 Tab2 FinishNav9 ERR_ABORTED
+1:41:58 Tab2 StartNav10 #typed
+1:41:59 Tab2 FinishNav10
+1:41:59 Tab2 PageLoad
+1:42:00 Tab2 StartNav11 #typed
+1:42:00 Tab2 FinishNav11
+1:42:00 Tab2 PageLoad
+1:46:03 Tab2 StartNav12 #typed
+1:46:03 Tab2 FinishNav12 ERR_ABORTED
+1:46:03 Tab2 StartNav13 #typed
+1:46:03 Tab2 FinishNav13
+1:46:03 Tab2 PageLoad
+1:46:04 Tab2 StartNav14 #typed
+1:46:04 Tab2 FinishNav14
+1:46:04 Tab2 PageLoad
+1:53:35 Tab2 StartNav15 #typed
+1:53:35 Tab2 FinishNav15
+1:53:35 Tab2 PageLoad
+3:49:32 Microsoft.UnloadController.IsUnclosableApp_IsNotWebApp
