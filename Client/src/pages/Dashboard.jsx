@@ -57,21 +57,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleDelete = async (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (window.confirm("Are you sure you want to delete this blueprint? This action cannot be undone.")) {
-      try {
-        await projectService.delete(id);
-        setProjects(projects.filter(p => p.id !== id));
-        addToast("Blueprint decommissioned successfully", "info");
-      } catch (err) {
-        console.error(err);
-        addToast("Failed to delete project", "error");
-      }
-    }
-  };
-
   const Skeletons = () => (
     <>
       {[1, 2, 3].map(i => (
@@ -88,7 +73,7 @@ const Dashboard = () => {
   return (
     <div className="main-content">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
-      
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem' }}>
         <div>
           <h1 style={{ marginBottom: '0.5rem' }}>Architecture Central</h1>
@@ -116,16 +101,9 @@ const Dashboard = () => {
         ) : (
           projects.map(project => (
             <Link key={project.id} to={`/project/${project.id}`} className="glass glass-hover project-card" style={{ padding: '2.5rem', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-              <button 
-                onClick={(e) => handleDelete(e, project.id)}
-                className="delete-btn"
-                title="Delete Project"
-              >
-                <Trash2 size={16} />
-              </button>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                 <span style={{ fontSize: '0.7rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'var(--primary-muted)', padding: '0.4rem 0.8rem', borderRadius: '100px', color: 'var(--primary)' }}>{project.scale} Scale</span>
-                 <ArrowRight size={20} color="var(--primary)" style={{ opacity: 0.6 }} />
+                <span style={{ fontSize: '0.7rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'var(--primary-muted)', padding: '0.4rem 0.8rem', borderRadius: '100px', color: 'var(--primary)' }}>{project.scale} Scale</span>
+                <ArrowRight size={20} color="var(--primary)" style={{ opacity: 0.6 }} />
               </div>
               <h3 style={{ marginBottom: '1rem', lineHeight: '1.3' }}>{project.name}</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '2rem', flex: 1, display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{project.description}</p>
@@ -142,7 +120,7 @@ const Dashboard = () => {
           <div className="glass" style={{ width: 'min(550px, 95vw)', padding: '3.5rem', position: 'relative' }}>
             <h2 style={{ marginBottom: '0.5rem' }}>New Implementation</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem' }}>Define your requirements for the AI architect.</p>
-            
+
             <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
               <div className="form-group">
                 <label>System Identity</label>
@@ -160,7 +138,7 @@ const Dashboard = () => {
                   <option value="large">Large (High-Availability Enterprise)</option>
                 </select>
               </div>
-              
+
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="button" onClick={() => setShowModal(false)} className="btn-secondary" style={{ flex: 1 }}>Discard</button>
                 <button type="submit" className="btn-primary" style={{ flex: 2 }} disabled={loading}>

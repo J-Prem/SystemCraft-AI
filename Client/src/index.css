@@ -246,3 +246,21 @@ input:focus {
   border-radius: 4px;
   transition: width 1s ease-out;
 }
+
+/* Mermaid Chart Styling */
+.mermaid-container {
+  width: 100%;
+  max-width: 100%;
+  transition: all 0.3s ease;
+}
+
+.mermaid-container svg {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.loading {
+  font-style: italic;
+  opacity: 0.5;
+  font-size: 0.9rem;
+}

@@ -7,9 +7,9 @@ import { Send, Database, GitBranch, Terminal, MessageSquare, Info, Folder, File,
 
 const FileTree = ({ structure }) => {
   if (!structure) return <div className="pulse">Generating architecture roadmap...</div>;
-  
+
   const lines = structure.split('\n').filter(l => l.trim());
-  
+
   return (
     <div className="file-tree">
       {lines.map((line, idx) => {
@@ -20,9 +20,9 @@ const FileTree = ({ structure }) => {
         const isFolder = line.includes('/') || (!cleanName.includes('.') && !line.includes('README'));
 
         return (
-          <div 
-            key={idx} 
-            className="file-tree-node" 
+          <div
+            key={idx}
+            className="file-tree-node"
             style={{ marginLeft: `${depth * 8}px` }}
           >
             {isFolder ? (
@@ -123,7 +123,7 @@ const ProjectDetail = () => {
 
   const SqlSchemaTable = ({ schema }) => {
     if (!schema || !schema.tables) return <div className="pulse">No schema tables defined.</div>;
-    
+
     return (
       <div className="schema-table-container">
         {schema.tables.map((table, tIdx) => (
@@ -163,7 +163,7 @@ const ProjectDetail = () => {
 
   const renderSchema = () => {
     if (!project?.databaseSchema?.schemaJson) return <div className="pulse">Initializing Schema...</div>;
-    
+
     try {
       const schema = JSON.parse(project.databaseSchema.schemaJson);
       if (schema.tables && Array.isArray(schema.tables)) {
@@ -209,14 +209,10 @@ const ProjectDetail = () => {
         <div style={{ padding: '1rem 2rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: '2.5rem' }}>
             {['architecture', 'schema', 'api', 'blueprint'].map((t) => (
-              <button 
+              <button
                 key={t}
-                onClick={() => setTab(t)} 
-                className="tab-btn"
-                style={{ 
-                  background: 'none', padding: '1rem 0', borderBottom: `2px solid ${tab === t ? 'var(--primary)' : 'transparent'}`,
-                  color: tab === t ? '#fff' : 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.6rem' 
-                }}
+                onClick={() => setTab(t)}
+                className={`tab-btn ${tab === t ? 'active' : ''}`}
               >
                 {t === 'architecture' && <GitBranch size={16} />}
                 {t === 'schema' && <Database size={16} />}
@@ -229,11 +225,11 @@ const ProjectDetail = () => {
             ))}
           </div>
 
-          <button 
+          <button
             onClick={handleDeleteProject}
             className="btn-danger"
           >
-            <Trash2 size={16} /> Decommission System
+            <Trash2 size={16} />
           </button>
         </div>
 
@@ -251,7 +247,7 @@ const ProjectDetail = () => {
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Primary Architectural Pattern</p>
                     </div>
                   </div>
-                  
+
                   <div className="glass" style={{ padding: '2rem', marginBottom: '3rem', background: 'rgba(99, 102, 241, 0.03)', borderLeft: '4px solid var(--primary)' }}>
                     <h4 style={{ color: 'var(--primary)', marginBottom: '0.75rem', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Design Overview</h4>
                     <p style={{ fontSize: '1.05rem', lineHeight: '1.7' }}>{project?.architecture?.description}</p>
@@ -276,11 +272,11 @@ const ProjectDetail = () => {
                   {project?.apiDefinitions?.map((api, idx) => (
                     <div key={idx} className="glass glass-hover" style={{ padding: '1.5rem' }}>
                       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-                        <span style={{ 
+                        <span style={{
                           fontWeight: '800', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em',
                           background: api.method === 'GET' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)',
                           color: api.method === 'GET' ? '#10b981' : '#6366f1',
-                          padding: '0.4rem 0.8rem', borderRadius: '6px' 
+                          padding: '0.4rem 0.8rem', borderRadius: '6px'
                         }}>{api.method}</span>
                         <span style={{ fontFamily: 'monospace', fontSize: '1rem', color: '#fff' }}>{api.endpoint}</span>
                       </div>
@@ -324,16 +320,16 @@ const ProjectDetail = () => {
           </div>
           <h4 style={{ fontSize: '1rem' }}>GenAI Architect</h4>
         </div>
-        
+
         <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {loading && !project ? (
-             <div className="skeleton" style={{ height: '80px', borderRadius: '18px 18px 18px 0' }}></div>
+            <div className="skeleton" style={{ height: '80px', borderRadius: '18px 18px 18px 0' }}></div>
           ) : (
             <div className="glass" style={{ padding: '1.25rem', fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5', background: 'rgba(255,255,255,0.02)' }}>
               I've drafted the core specifications for <strong>{project?.name}</strong>. How should we proceed with refinement?
             </div>
           )}
-          
+
           {Array.isArray(chat) && chat.map((msg, idx) => (
             <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div style={{ background: 'var(--primary)', color: '#fff', padding: '0.85rem 1.1rem', borderRadius: '18px 18px 0 18px', alignSelf: 'flex-end', fontSize: '0.9rem', maxWidth: '85%', boxShadow: '0 4px 15px rgba(99, 102, 241, 0.2)' }}>
@@ -344,17 +340,17 @@ const ProjectDetail = () => {
               </div>
             </div>
           ))}
-          
+
           {sending && (
             <div style={{ alignSelf: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.85rem 1.1rem', borderRadius: '0 18px 18px 18px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                 <div className="typing-dots">
-                   <div className="typing-dot"></div>
-                   <div className="typing-dot"></div>
-                   <div className="typing-dot"></div>
-                 </div>
-                 <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Architect is thinking...</span>
-               </div>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.85rem 1.1rem', borderRadius: '0 18px 18px 18px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div className="typing-dots">
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                </div>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Architect is thinking...</span>
+              </div>
             </div>
           )}
           <div ref={chatEndRef} />
@@ -362,11 +358,11 @@ const ProjectDetail = () => {
 
         <form onSubmit={handleSendMessage} style={{ padding: '1.5rem', borderTop: '1px solid var(--border)', background: 'rgba(0,0,0,0.2)' }}>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <input 
-              type="text" 
-              placeholder="Ask for refinements..." 
-              value={message} 
-              onChange={(e) => setMessage(e.target.value)} 
+            <input
+              type="text"
+              placeholder="Ask for refinements..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               style={{ fontSize: '0.95rem', paddingRight: '3.5rem', background: '#0f172a' }}
             />
             <button type="submit" className="btn-primary" style={{ position: 'absolute', right: '5px', padding: '0.4rem', borderRadius: '6px' }} disabled={sending}>

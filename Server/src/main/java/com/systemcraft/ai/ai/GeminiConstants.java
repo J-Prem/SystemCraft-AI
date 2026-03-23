@@ -37,17 +37,18 @@ public class GeminiConstants {
         6. Clear Execution Phases (Step-by-step)
 
         Also provide an "summary" (Executive Summary, max 3-4 sentences) of the entire plan.
+        
+        Generate three distinct Mermaid.js charts:
+        1. "flowchart": A strict graph TD representing the logical execution flow.
+        2. "schemaChart": A Mermaid classDiagram or erDiagram representing the data models and their relationships.
+        3. "apiChart": A Mermaid flowchart (graph LR) or sequence diagram representing key API endpoints and their interaction flow.
 
-        Also generate a strict Mermaid.js flowchart (graph TD) representing the execution flow ("flowchart").
-        Rules for the flowchart:
-        - Use graph TD
+        Rules for all charts:
         - IMPORTANT: Enclose ALL node labels/text in double quotes to handle special characters. Example: A["User Action"]
         - Do NOT use newlines (\\n) inside node labels. Keep labels short.
         - Do NOT use parentheses in node IDs. IDs must be simple alphanumeric strings (e.g., Step1, DecisionA).
         - No decorative nodes or generic labels.
         - No duplicate steps.
-        - Every node must correspond to a real step in the execution plan.
-        - Focus on the logic flow: Decisions -> Actions -> Outputs.
 
-        Format the output as a JSON object with 'markdown', 'summary', and 'flowchart' fields.""";
+        Format the output as a JSON object with 'markdown', 'summary', 'flowchart', 'schemaChart', and 'apiChart' fields.""";
 }

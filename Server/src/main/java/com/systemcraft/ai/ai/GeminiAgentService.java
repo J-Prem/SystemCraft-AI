@@ -6,7 +6,6 @@ import com.systemcraft.ai.dto.ai.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -36,28 +35,35 @@ public class GeminiAgentService {
                 GeminiConstants.ENUMERATION_PROMPT, intake.getProblem(), intake.getUser(), intake.getOutput(), intake.getConstraints());
 
         Map<String, Object> schema = Map.of(
-            "type", "ARRAY",
-            "items", Map.of(
-                "type", "OBJECT",
-                "properties", Map.of(
-                    "id", Map.of("type", "STRING"),
-                    "name", Map.of("type", "STRING"),
-                    "architecture", Map.of("type", "STRING"),
-                    "summary", Map.of("type", "STRING"),
-                    "tools", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
-                    "complexity", Map.of("type", "STRING"),
-                    "risks", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
-                    "scalability", Map.of("type", "STRING"),
-                    "pros", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
-                    "cons", Map.of("type", "ARRAY", "items", Map.of("type", "STRING"))
-                ),
-                "required", List.of("id", "name", "architecture", "summary", "tools", "complexity", "risks", "scalability", "pros", "cons")
-            )
+            "type", "OBJECT",
+            "properties", Map.of(
+                "pipelines", Map.of(
+                    "type", "ARRAY",
+                    "items", Map.of(
+                        "type", "OBJECT",
+                        "properties", Map.of(
+                            "id", Map.of("type", "STRING"),
+                            "name", Map.of("type", "STRING"),
+                            "architecture", Map.of("type", "STRING"),
+                            "summary", Map.of("type", "STRING"),
+                            "tools", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
+                            "complexity", Map.of("type", "STRING"),
+                            "risks", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
+                            "scalability", Map.of("type", "STRING"),
+                            "pros", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
+                            "cons", Map.of("type", "ARRAY", "items", Map.of("type", "STRING"))
+                        ),
+                        "required", List.of("id", "name", "architecture", "summary", "tools", "complexity", "risks", "scalability", "pros", "cons")
+                    )
+                )
+            ),
+            "required", List.of("pipelines")
         );
 
         String jsonResponse = callGemini(prompt, schema);
         try {
-            return objectMapper.readValue(jsonResponse, new TypeReference<List<PipelineDTO>>() {});
+            Map<String, List<PipelineDTO>> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<Map<String, List<PipelineDTO>>>() {});
+            return responseMap.get("pipelines");
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse Pipelines: " + e.getMessage(), e);
         }
@@ -101,21 +107,21 @@ public class GeminiAgentService {
             
             if (evaluations != null) {
                 for (Map<String, Object> e : evaluations) {
-                    scores.put((String) e.get("pipelineId"), EvaluationDTO.ScoreDTO.builder()
-                            .speed(((Number) e.get("speed")).doubleValue())
-                            .reliability(((Number) e.get("reliability")).doubleValue())
-                            .cognitiveLoad(((Number) e.get("cognitiveLoad")).doubleValue())
-                            .extensibility(((Number) e.get("extensibility")).doubleValue())
-                            .build());
+                    scores.put((String) e.get("pipelineId"), new EvaluationDTO.ScoreDTO(
+                            ((Number) e.get("speed")).doubleValue(),
+                            ((Number) e.get("reliability")).doubleValue(),
+                            ((Number) e.get("cognitiveLoad")).doubleValue(),
+                            ((Number) e.get("extensibility")).doubleValue()
+                    ));
                 }
             }
 
-            return EvaluationDTO.builder()
-                    .selectedPipelineId((String) rawData.get("selectedPipelineId"))
-                    .reasoning((String) rawData.get("reasoning"))
-                    .reasoningSummary((String) rawData.get("reasoningSummary"))
-                    .scores(scores)
-                    .build();
+            return new EvaluationDTO(
+                    (String) rawData.get("selectedPipelineId"),
+                    (String) rawData.get("reasoning"),
+                    (String) rawData.get("reasoningSummary"),
+                    scores
+            );
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse Evaluation: " + e.getMessage(), e);
         }
@@ -130,9 +136,11 @@ public class GeminiAgentService {
             "properties", Map.of(
                 "markdown", Map.of("type", "STRING"),
                 "summary", Map.of("type", "STRING"),
-                "flowchart", Map.of("type", "STRING")
+                "flowchart", Map.of("type", "STRING"),
+                "schemaChart", Map.of("type", "STRING"),
+                "apiChart", Map.of("type", "STRING")
             ),
-            "required", List.of("markdown", "summary", "flowchart")
+            "required", List.of("markdown", "summary", "flowchart", "schemaChart", "apiChart")
         );
 
         String jsonResponse = callGemini(prompt, schema);
@@ -144,6 +152,10 @@ public class GeminiAgentService {
     }
 
     public String sendChatMessage(List<WorkflowChatRequestDTO.ChatMessageDTO> history, String message, String context) {
+        if ("AIzaSyDPX5QNm0VRS5f6KoH5K0w6IMuxvT5LEWM".equals(apiKey)) {
+            return "I am a mock AI assistant running because the default system API key is being used. Please replace `google.ai.api.key` in `application.properties` with a valid Google Gemini API key to enable real neural responses.";
+        }
+
         String systemInstruction = String.format("%s\n\nCurrent Project Context:\n%s", GeminiConstants.SYSTEM_PROMPT_BASE, context);
         
         List<Map<String, Object>> contents = history.stream()
@@ -189,6 +201,18 @@ public class GeminiAgentService {
     }
 
     private String callGemini(String prompt, Map<String, Object> responseSchema) {
+        if ("AIzaSyDPX5QNm0VRS5f6KoH5K0w6IMuxvT5LEWM".equals(apiKey)) {
+            System.err.println("GeminiAgentService: Using mock AI response.");
+            if (prompt.contains(GeminiConstants.ENUMERATION_PROMPT)) {
+                return "{\"pipelines\":[{\"id\":\"mock-1\",\"name\":\"Mock AI Pipeline\",\"architecture\":\"Spring Boot + React\",\"summary\":\"A complete test pipeline running in mock mode.\",\"tools\":[\"Spring Security\"],\"complexity\":\"Medium\",\"risks\":[\"None\"],\"scalability\":\"High\",\"pros\":[\"Fast\"],\"cons\":[\"Mocked\"]}]}";
+            } else if (prompt.contains(GeminiConstants.EVALUATION_PROMPT)) {
+                return "{\"selectedPipelineId\":\"mock-1\",\"reasoning\":\"Because it is the mock pipeline\",\"reasoningSummary\":\"Best option for mock testing\",\"evaluations\":[{\"pipelineId\":\"mock-1\",\"speed\":95,\"reliability\":99,\"cognitiveLoad\":20,\"extensibility\":80}]}";
+            } else if (prompt.contains(GeminiConstants.BLUEPRINT_PROMPT)) {
+                return "{\"markdown\":\"# Mock Blueprint\\nThis is a mocked blueprint since no valid API key was provided.\",\"summary\":\"A simple mock summary to test the UI flow.\",\"flowchart\":\"graph TD\\nA-->B\",\"schemaChart\":\"erDiagram\\nUSER ||--o{ POST : writes\",\"apiChart\":\"sequenceDiagram\\nClient->>Server: GET /api\"}";
+            }
+            return "{}";
+        }
+
         Map<String, Object> generationConfig = new HashMap<>();
         generationConfig.put("responseMimeType", "application/json");
         if (responseSchema != null) {

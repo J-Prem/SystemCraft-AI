@@ -75,6 +75,8 @@ const AiArchitect = () => {
         Current Strategy: ${selectedPipeline?.name}
         Architecture: ${selectedPipeline?.architecture}
         Blueprint Summary: ${blueprint?.summary}
+        Data Schema: ${blueprint?.schemaChart}
+        API Architecture: ${blueprint?.apiChart}
       `;
       const response = await aiWorkflowService.sendChatMessage(chat, msg, context);
       setChat(prev => [...prev, { role: 'model', content: response.data }]);

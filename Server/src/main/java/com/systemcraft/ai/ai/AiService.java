@@ -61,6 +61,14 @@ public class AiService {
     }
 
     public String callAiSync(String prompt) {
+        if ("AIzaSyDPX5QNm0VRS5f6KoH5K0w6IMuxvT5LEWM".equals(apiKey)) {
+            System.err.println("Using mock AI response because default API key is present.");
+            if (prompt.contains("Analyze the project and provide ONLY a strict JSON response")) {
+                return "{\"architecture\": {\"type\": \"Monolith\", \"techStack\": [\"React\", \"Spring Boot\"], \"description\": \"Mock Architecture\"}, \"databaseSchema\": {}, \"apiEndpoints\": [], \"folderStructure\": \"src/\"}";
+            } else {
+                return "I am running in mock mode because the default API key is being used. Please configure `google.ai.api.key` in application.properties to enable real AI project analysis and chat responses.";
+            }
+        }
         try {
             return callAiAsync(prompt).block();
         } catch (WebClientResponseException e) {

@@ -29,14 +29,40 @@ const AiBlueprint = ({ blueprint, chat, onSendMessage, loading }) => {
           </div>
         </div>
 
-        <div style={{ marginBottom: '4rem' }}>
-          <h3 style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ marginBottom: '3rem' }}>
+          <h3 style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <Layers size={22} className="primary-text" /> Architectural Flow
           </h3>
-          <MermaidChart chart={blueprint.flowchart} />
+          {blueprint.flowchart ? (
+            <MermaidChart chart={blueprint.flowchart} />
+          ) : (
+            <div className="glass" style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No flow diagram generated.</div>
+          )}
+        </div>
+        
+        <div style={{ marginBottom: '3rem' }}>
+          <h3 style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Search size={22} className="primary-text" /> Data Schema
+          </h3>
+          {blueprint.schemaChart ? (
+            <MermaidChart chart={blueprint.schemaChart} />
+          ) : (
+            <div className="glass" style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No schema diagram generated.</div>
+          )}
+        </div>
+        
+        <div style={{ marginBottom: '3rem' }}>
+          <h3 style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FileText size={22} className="primary-text" /> API Architecture
+          </h3>
+          {blueprint.apiChart ? (
+            <MermaidChart chart={blueprint.apiChart} />
+          ) : (
+            <div className="glass" style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No API architecture diagram generated.</div>
+          )}
         </div>
 
-        <div className="prose">
+        <div className="prose" style={{ marginTop: '4rem' }}>
           <ReactMarkdown>{blueprint.markdown}</ReactMarkdown>
         </div>
       </div>
